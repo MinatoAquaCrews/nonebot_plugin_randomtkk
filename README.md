@@ -29,9 +29,11 @@ _🎶 随机唐可可 🎶_
 
 ## 版本
 
-v0.1.0
+v0.1.1
 
 ⚠ 适配nonebot2-2.0.0beta.2
+
+[更新日志](https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.1)
 
 ## 安装
 
@@ -46,12 +48,12 @@ v0.1.0
 3. 可更改默认配置：
 
     ```python
-    TKK_PATH="./data/resource"  # 可自定义资源路径
+    TKK_PATH="./data/resource"  # 可自定义资源路径，例如
     EASY_SIZE=10                # 简单
     NORMAL_SIZE=20              # 普通
     HARD_SIZE=40                # 困难
     EXTREME_SIZE=60             # 地狱
-    MAX_SIZE=80                 # 自定义的最大尺寸
+    MAX_SIZE=80                 # 自定义的最大尺寸，建议不要太大
     SHOW_COORDINATE=true        # 是否显示坐标文字
     ```
 
@@ -64,6 +66,8 @@ v0.1.0
 ## 功能
 
 寻找唐可可！
+
+**新增** 支持私聊。
 
 ## 命令
 
