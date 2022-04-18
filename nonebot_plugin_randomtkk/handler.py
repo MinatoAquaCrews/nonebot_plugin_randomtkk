@@ -3,7 +3,6 @@ from typing import Tuple, List, Dict, Union, Optional
 from PIL import Image, ImageFont, ImageDraw
 from io import BytesIO
 import asyncio
-from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import MessageSegment
 from .config import tkk_config, TKK_PATH
