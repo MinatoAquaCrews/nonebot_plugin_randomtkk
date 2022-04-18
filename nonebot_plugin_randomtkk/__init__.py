@@ -9,23 +9,27 @@ from .handler import random_tkk_handler
 __randomtkk_vsrsion__ = "v0.1.0"
 __randomtkk_notes__ = f'''
 随机唐可可 {__randomtkk_vsrsion__}
-[随机唐可可] 后接[简单/普通/困难/地狱/自定义数量]开启唐可可挑战
+[随机唐可可]+[简单/普通/困难/地狱/自定义数量] 开启唐可可挑战
 不指定难度默认普通模式
-支持[随机鲤鱼/鲤鱼王/Liyuu/liyuu]
-答案格式：[答案是][行][空格][列]
-例如：答案是114 514
+可替换为[随机鲤鱼/鲤鱼王/Liyuu/liyuu]
+答案格式：[答案是][行][空格][列]，例如：答案是114 514
+[找不到唐可可/唐可可人呢/呼叫鲤鱼姐] 发起者可提前结束游戏
 '''.strip()
 
-def unique_check(event: GroupMessageEvent) -> bool:
+def inplaying_check(event: GroupMessageEvent) -> bool:
     return random_tkk_handler.check_tkk_playing(str(event.group_id))
 
+def starter_check(event: GroupMessageEvent) -> bool:
+    return random_tkk_handler.check_starter_over_game(str(event.group_id), str(event.user_id))
+
 random_tkk = on_command(cmd="随机唐可可", aliases={"随机鲤鱼", "随机鲤鱼王", "随机Liyuu", "随机liyuu"}, priority=12)
-guess_tkk = on_command(cmd="答案是", rule=Rule(unique_check), priority=12, block=True)
-over_tkk = on_command(cmd="找不到唐可可", aliases={"唐可可人呢", "呼叫鲤鱼姐"}, rule=Rule(unique_check), priority=12, block=True)
+guess_tkk = on_command(cmd="答案是", rule=Rule(inplaying_check), priority=12, block=True)
+over_tkk = on_command(cmd="找不到唐可可", aliases={"唐可可人呢", "呼叫鲤鱼姐"}, rule=Rule(starter_check), priority=12, block=True)
  
 @random_tkk.handle()
 async def _(matcher: Matcher, event: GroupMessageEvent, args: Message = CommandArg()):
     gid = str(event.group_id)
+    uid = str(event.user_id)
     if random_tkk_handler.check_tkk_playing(gid):
         await matcher.finish("游戏已经开始啦！", at_sender=True)
         
@@ -41,12 +45,11 @@ async def _(matcher: Matcher, event: GroupMessageEvent, args: Message = CommandA
     else:
         await matcher.finish("参数太多啦~")
         
-    img_file, waiting = await random_tkk_handler.one_go(gid, level)
-    
-    await matcher.send(MessageSegment.image(img_file))
-    await matcher.send(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514")
-    
+    img_file, waiting = await random_tkk_handler.one_go(gid, uid, level)
     random_tkk_handler.start_timer(matcher, gid, waiting)
+    
+    await matcher.send(MessageSegment.image(img_file)) 
+    await matcher.finish(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到唐可可]")
     
 
 async def get_user_guess(args: Message = CommandArg(), state: T_State = State()):
