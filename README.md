@@ -12,7 +12,7 @@ _🎶 随机唐可可 🎶_
 <p align="center">
   
   <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/MinatoAquaCrews/nonebot_plugin_randomtkk">
+    <img src="https://img.shields.io/github/license/MinatoAquaCrews/nonebot_plugin_randomtkk?color=blue">
   </a>
 
   <a href="https://github.com/nonebot/nonebot2">

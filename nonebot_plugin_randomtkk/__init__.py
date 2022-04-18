@@ -1,7 +1,7 @@
 from nonebot import on_command
 from nonebot.typing import T_State
 from nonebot.matcher import Matcher
-from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import GROUP, Message, MessageSegment, GroupMessageEvent
 from nonebot.params import Depends, CommandArg, State
 from nonebot.rule import Rule
 from .handler import random_tkk_handler
@@ -22,9 +22,9 @@ def inplaying_check(event: GroupMessageEvent) -> bool:
 def starter_check(event: GroupMessageEvent) -> bool:
     return random_tkk_handler.check_starter_over_game(str(event.group_id), str(event.user_id))
 
-random_tkk = on_command(cmd="随机唐可可", aliases={"随机鲤鱼", "随机鲤鱼王", "随机Liyuu", "随机liyuu"}, priority=12)
-guess_tkk = on_command(cmd="答案是", rule=Rule(inplaying_check), priority=12, block=True)
-over_tkk = on_command(cmd="找不到唐可可", aliases={"唐可可人呢", "呼叫鲤鱼姐"}, rule=Rule(starter_check), priority=12, block=True)
+random_tkk = on_command(cmd="随机唐可可", aliases={"随机鲤鱼", "随机鲤鱼王", "随机Liyuu", "随机liyuu"}, priority=12, permission=GROUP)
+guess_tkk = on_command(cmd="答案是", rule=Rule(inplaying_check), priority=12, permission=GROUP, block=True)
+over_tkk = on_command(cmd="找不到唐可可", aliases={"唐可可人呢", "呼叫鲤鱼姐"}, rule=Rule(starter_check), priority=12, permission=GROUP, block=True)
  
 @random_tkk.handle()
 async def _(matcher: Matcher, event: GroupMessageEvent, args: Message = CommandArg()):
@@ -46,11 +46,12 @@ async def _(matcher: Matcher, event: GroupMessageEvent, args: Message = CommandA
         await matcher.finish("参数太多啦~")
         
     img_file, waiting = await random_tkk_handler.one_go(gid, uid, level)
+    
     random_tkk_handler.start_timer(matcher, gid, waiting)
     
     await matcher.send(MessageSegment.image(img_file)) 
     await matcher.finish(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到唐可可]")
-    
+
 
 async def get_user_guess(args: Message = CommandArg(), state: T_State = State()):
     args = args.extract_plain_text().strip().split()
