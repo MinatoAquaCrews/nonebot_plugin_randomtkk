@@ -20,7 +20,7 @@ _🎶 随机唐可可 🎶_
   </a>
 
   <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.1">
-    <img src="https://img.shields.io/github/v/release/MinatoAquaCrews/nonebot_plugin_randomtkk">
+    <img src="https://img.shields.io/github/v/release/MinatoAquaCrews/nonebot_plugin_randomtkk?color=orange">
   </a>
   
 </p>
@@ -81,8 +81,10 @@ v0.1.1
 
 5. 各群聊互不影响，每个群聊仅能同时开启一局游戏。
 
+## 功能展示
+
+![tkk_display](./tkk_display.jpg)
+
 ## 本插件改自
 
 [Hoshino-randomtkk](https://github.com/kosakarin/hoshino_big_cockroach)
-
-很早就想改这个插件适配到nb2上了。
