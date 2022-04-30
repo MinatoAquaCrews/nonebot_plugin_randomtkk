@@ -16,7 +16,7 @@ _🎶 随机唐可可 🎶_
   </a>
 
   <a href="https://github.com/nonebot/nonebot2">
-    <img src="https://img.shields.io/github/v/release/nonebot/nonebot2?color=green">
+    <img src="https://img.shields.io/badge/nonebot2-2.0.0beta.2-green">
   </a>
 
   <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.1">
