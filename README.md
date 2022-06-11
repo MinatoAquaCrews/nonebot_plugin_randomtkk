@@ -16,11 +16,15 @@ _🎶 随机唐可可 🎶_
   </a>
 
   <a href="https://github.com/nonebot/nonebot2">
-    <img src="https://img.shields.io/badge/nonebot2-2.0.0beta.2-green">
+    <img src="https://img.shields.io/badge/nonebot2-2.0.0beta.2+-green">
   </a>
 
   <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.1">
     <img src="https://img.shields.io/github/v/release/MinatoAquaCrews/nonebot_plugin_randomtkk?color=orange">
+  </a>
+
+  <a href="https://www.codefactor.io/repository/github/MinatoAquaCrews/nonebot_plugin_randomtkk">
+    <img src="https://img.shields.io/codefactor/grade/github/MinatoAquaCrews/nonebot_plugin_randomtkk/beta?color=red">
   </a>
   
 </p>
@@ -31,7 +35,7 @@ _🎶 随机唐可可 🎶_
 
 v0.1.1
 
-⚠ 适配nonebot2-2.0.0beta.2
+⚠ 适配nonebot2-2.0.0beta.2+
 
 [更新日志](https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.1)
 

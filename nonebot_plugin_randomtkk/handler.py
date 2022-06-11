@@ -32,7 +32,7 @@ class RandomTkkHandler:
                 if tkk_size < self.tkk_config.easy_size:
                     tkk_size = self.tkk_config.easy_size
                 return tkk_size
-            except:
+            except Exception:
                 return self.tkk_config.easy_size
     
     def get_tkk_position(self, tkk_size: int) -> Tuple[int, int]:
@@ -72,7 +72,7 @@ class RandomTkkHandler:
                 return self.tkk_status[uid]["playing"] and self.tkk_status[uid]["starter"] == uid
             else:
                 return self.tkk_status[gid]["playing"] and self.tkk_status[gid]["starter"] == uid
-        except:
+        except Exception:
             return False
     
     async def draw_tkk(self, row: int, col: int, tkk_size: int) -> Tuple[bytes, bytes]:
@@ -101,7 +101,7 @@ class RandomTkkHandler:
                             draw = ImageDraw.Draw(icon)
                             draw.text((20,40), f"({c+1},{r+1})", font=font, fill=(255, 0, 0, 0))
                         base.paste(icon, (r * 64, c * 64))
-                    except:
+                    except Exception:
                         continue
         
         buf = BytesIO()
@@ -127,7 +127,7 @@ class RandomTkkHandler:
             timer = self.timers.get(uuid, None)
             if timer:
                 timer.cancel()
-        except:
+        except Exception:
             return False
         
         await self.timeout_close_game(matcher, uuid)
@@ -167,7 +167,7 @@ class RandomTkkHandler:
             if timer:
                 timer.cancel()
             self.timers.pop(uuid, None)
-        except:
+        except Exception:
             return False
         
         return self.tkk_status.pop(uuid, False)
