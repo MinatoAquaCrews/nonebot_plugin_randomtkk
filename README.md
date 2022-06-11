@@ -24,7 +24,7 @@ _🎶 随机唐可可 🎶_
   </a>
 
   <a href="https://www.codefactor.io/repository/github/MinatoAquaCrews/nonebot_plugin_randomtkk">
-    <img src="https://img.shields.io/codefactor/grade/github/MinatoAquaCrews/nonebot_plugin_randomtkk/beta?color=red">
+    <img src="https://img.shields.io/codefactor/grade/github/MinatoAquaCrews/nonebot_plugin_randomtkk/main?color=red">
   </a>
   
 </p>
