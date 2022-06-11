@@ -58,10 +58,7 @@ class RandomTkkHandler:
         '''
             作为Rule: 群聊/私聊是否进行游戏
         '''
-        if not self.tkk_status.get(uuid, False):
-            return False
-        else:
-            return self.tkk_status[uuid]["playing"]
+        return False if not self.tkk_status.get(uuid, False) else self.tkk_status[uuid]["playing"]
 
     def check_starter(self, gid: Optional[str], uid: str) -> bool:
         '''
@@ -94,15 +91,12 @@ class RandomTkkHandler:
                     base.paste(tkk, (r * 64, c * 64))
                     temp += 1
                 else:
-                    try:
-                        icon = Image.open(TKK_PATH /(str(random.randint(1, 22)) + '.png'))
-                        icon = icon.resize((64,64), Image.ANTIALIAS)
-                        if self.tkk_config.show_coordinate:
-                            draw = ImageDraw.Draw(icon)
-                            draw.text((20,40), f"({c+1},{r+1})", font=font, fill=(255, 0, 0, 0))
-                        base.paste(icon, (r * 64, c * 64))
-                    except Exception:
-                        pass
+                    icon = Image.open(TKK_PATH /(str(random.randint(1, 22)) + '.png'))
+                    icon = icon.resize((64,64), Image.ANTIALIAS)
+                    if self.tkk_config.show_coordinate:
+                        draw = ImageDraw.Draw(icon)
+                        draw.text((20,40), f"({c+1},{r+1})", font=font, fill=(255, 0, 0, 0))
+                    base.paste(icon, (r * 64, c * 64))
         
         buf = BytesIO()
         base.save(buf, format='png')

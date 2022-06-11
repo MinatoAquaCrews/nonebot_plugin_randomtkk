@@ -19,7 +19,7 @@ _🎶 随机唐可可 🎶_
     <img src="https://img.shields.io/badge/nonebot2-2.0.0beta.2+-green">
   </a>
 
-  <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.1">
+  <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.2">
     <img src="https://img.shields.io/github/v/release/MinatoAquaCrews/nonebot_plugin_randomtkk?color=orange">
   </a>
 
@@ -33,11 +33,11 @@ _🎶 随机唐可可 🎶_
 
 ## 版本
 
-v0.1.1
+v0.1.2
 
 ⚠ 适配nonebot2-2.0.0beta.2+
 
-[更新日志](https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.1)
+[更新日志](https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.2)
 
 ## 安装
 
@@ -63,15 +63,15 @@ v0.1.1
 
     注意图片最小尺寸为10，最大尺寸可通过`MAX_SIZE`修改（默认80），但生成时间会变长；`SHOW_COORDINATE`开启会在生成的图片方阵中显示坐标。
     
-    ⚠ 资源路径错误或缺少资源会在启动时报错，此时无法开始游戏。
+4. 缺失资源时会尝试从repo中下载至指定路径。
 
-4. 呜↗太⬆好⬇听↙了↖吧↗你唱歌真的好好听啊，简直就是天籁！我刚才，听到你唱歌了。我们以后一起唱好不好？一起唱！一起做学园偶像！
+    ⚠ 使用`raw.fastgit.org`进行加速
+
+5. 呜↗太⬆好⬇听↙了↖吧↗你唱歌真的好好听啊，简直就是天籁！我刚才，听到你唱歌了。我们以后一起唱好不好？一起唱！一起做学园偶像！
 
 ## 功能
 
 寻找唐可可！
-
-**新增** 支持私聊。
 
 ## 命令
 
