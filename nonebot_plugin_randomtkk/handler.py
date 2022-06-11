@@ -102,7 +102,7 @@ class RandomTkkHandler:
                             draw.text((20,40), f"({c+1},{r+1})", font=font, fill=(255, 0, 0, 0))
                         base.paste(icon, (r * 64, c * 64))
                     except Exception:
-                        continue
+                        pass
         
         buf = BytesIO()
         base.save(buf, format='png')
