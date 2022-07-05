@@ -58,7 +58,7 @@ v0.1.3a1
     HARD_SIZE=40                # 困难
     EXTREME_SIZE=60             # 地狱
     MAX_SIZE=80                 # 自定义的最大尺寸，建议不要太大
-    SHOW_COORDINATE=true        # 是否显示坐标文字
+    SHOW_COORDINATE=true        # 是否显示坐标文字，建议开启
     ```
 
     注意图片最小尺寸为10，最大尺寸可通过`MAX_SIZE`修改（默认80），但生成时间会变长；`SHOW_COORDINATE`开启会在生成的图片方阵中显示坐标。
