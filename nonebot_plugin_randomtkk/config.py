@@ -19,6 +19,32 @@ driver = nonebot.get_driver()
 tkk_config: RandomTkkConfig = RandomTkkConfig.parse_obj(driver.config.dict())
 TKK_PATH: Path = tkk_config.tkk_path
 
+characters = {
+    "honoka": "穗乃果",
+    "eli": "绘理",
+    "umi": ["海未"],
+    "maki": ["西木野真姬", "真姬"],
+    "rin": ["星空凛", "凛"],
+    "hanayo": ["花阳"],
+    "nico": ["妮可"],
+    "nozomi": ["东条希"],
+    "kotori": ["南小鸟"],
+    "you": ["渡边曜"],
+    "dia": ["黑泽黛雅"],
+    "riko": ["樱内梨子"],
+    "yoshiko": ["津岛善子"],
+    "ruby": ["黑泽露比"],
+    "hanamaru": ["国木田花丸"],
+    "mari": ["小原鞠莉"],
+    "kanan": ["松浦果南"],
+    "chika": ["高海千歌"],
+    "ren": ["叶月恋"],
+    "sumire": ["平安名堇"],
+    "chisato": ["岚千砂都"],
+    "kanon": ["涩谷香音"],
+    "tankuku": ["唐可可"]
+}
+
 class DownloadError(Exception):
     def __init__(self, msg):
         self.msg = msg
@@ -46,11 +72,13 @@ async def _():
     if not tkk_path.exists():
         tkk_path.mkdir(parents=True, exist_ok=True)
         
-    url = "https://raw.fastgit.org/MinatoAquaCrews/nonebot_plugin_randomtkk/beta/nonebot_plugin_randomtkk/resource/"
+    url = "https://raw.fastgit.org/MinatoAquaCrews/nonebot_plugin_randomtkk/main/nonebot_plugin_randomtkk/resource/"
     
-    if not (tkk_path / "tankuku.png").exists():
-        response = await download_url(url + "tankuku.png")
-        await save_resource("tankuku.png", response)
+    for chara in characters:
+        _name = chara + ".png"
+        if not (tkk_path / _name).exists():
+            response = await download_url(url + _name)
+            await save_resource(_name, response)
 
     if not (tkk_path / "mark.png").exists():
         response = await download_url(url + "mark.png")
@@ -59,14 +87,7 @@ async def _():
     if not (tkk_path / "msyh.ttc").exists():
         response = await download_url(url + "msyh.ttc")
         await save_resource("msyh.ttc", response)
-        
-    for i in range(1, 23):
-        _name = str(i) + ".png"
-        if not (tkk_path / _name).exists():
-            response = await download_url(url + _name)
-            await save_resource(_name, response)
 
 async def save_resource(name: str, response: httpx.Response) -> None:
     async with aiofiles.open((tkk_config.tkk_path / name), "wb") as f:
         await f.write(response.content)
-        await f.close()

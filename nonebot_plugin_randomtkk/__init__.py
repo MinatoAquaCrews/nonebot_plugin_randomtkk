@@ -7,7 +7,7 @@ from nonebot.params import Depends, CommandArg, State
 from nonebot.rule import Rule
 from .handler import random_tkk_handler
 
-__randomtkk_vsrsion__ = "v0.1.2"
+__randomtkk_vsrsion__ = "v0.1.3a1"
 __randomtkk_notes__ = f'''
 随机唐可可 {__randomtkk_vsrsion__}
 [随机唐可可]+[简单/普通/困难/地狱/自定义数量] 开启唐可可挑战
