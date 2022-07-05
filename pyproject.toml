@@ -4,6 +4,7 @@ version = "0.1.2"
 description = "Find Tan Kuku!"
 authors = ["KafCoppelia <k740677208@gmail.com>"]
 license = "MIT"
+readme = "README.md"
 packages = [{include = "nonebot_plugin_randomtkk"}]
 
 [tool.poetry.dependencies]
