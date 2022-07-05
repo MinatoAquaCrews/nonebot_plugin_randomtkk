@@ -52,7 +52,7 @@ v0.1.3a1
 3. 可更改默认配置：
 
     ```python
-    TKK_PATH="./data/resource"  # 可自定义资源路径，例如
+    TKK_PATH="./data/resource"  # 资源路径
     EASY_SIZE=10                # 简单
     NORMAL_SIZE=20              # 普通
     HARD_SIZE=40                # 困难
