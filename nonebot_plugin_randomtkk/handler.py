@@ -1,10 +1,10 @@
-import random
 from typing import Tuple, List, Dict, Union, Optional
 from PIL import Image, ImageFont, ImageDraw
 from io import BytesIO
-import asyncio
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import MessageSegment
+import random
+import asyncio
 from .config import tkk_config, find_charac, get_pick_list
 
 class RandomTkkHandler:

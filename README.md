@@ -19,7 +19,7 @@ _🎶 随机唐可可 🎶_
     <img src="https://img.shields.io/badge/nonebot2-2.0.0beta.2+-green">
   </a>
 
-  <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.3a1">
+  <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.3rc1">
     <img src="https://img.shields.io/github/v/release/MinatoAquaCrews/nonebot_plugin_randomtkk?color=orange">
   </a>
 
@@ -31,11 +31,11 @@ _🎶 随机唐可可 🎶_
 
 ## 版本
 
-v0.1.3a1
+v0.1.3rc1
 
 ⚠ 适配nonebot2-2.0.0beta.2+
 
-[更新日志](https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.3a1)
+[更新日志](https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.3rc1)
 
 ## 安装
 
@@ -73,17 +73,17 @@ v0.1.3a1
 
 ## 命令
 
-1. 开始游戏：[随机唐可可|或其他角色名]+[简单/普通/困难/地狱/自定义数量]，开始游戏后会限时挑战；
+1. 开始游戏：[随机唐可可]（或其他角色名）+[简单/普通/困难/地狱/自定义数量]，开始游戏后会限时挑战；
 
     ⚠ 仅能以[随机唐可可]不指定难度（默认普通）的方式开启游戏，若想寻找其他角色请使用完整命令
 
-    ⚠ 角色名包括「[LoveLive!](https://zh.moegirl.org.cn/LoveLive!)」、「[LoveLive!Sunshine!!](https://zh.moegirl.org.cn/LoveLive!Sunshine!!)」、「[LoveLive!Superstar!!](https://zh.moegirl.org.cn/LoveLive!Superstar!!)」角色名称及常见昵称
+    ⚠ 角色名包括组合「[LoveLive!-μ's](https://zh.moegirl.org.cn/LoveLive!)」、「[LoveLive!Sunshine!!-Aqours](https://zh.moegirl.org.cn/LoveLive!Sunshine!!)」、「[LoveLive!Superstar!!-Liella](https://zh.moegirl.org.cn/LoveLive!Superstar!!)」成员名称及常见昵称
 
 2. 输入答案：[答案是][行][空格][列]，行列为具体数字，例如：答案是114 514；
 
 3. 答案正确则结束此次游戏；不正确则直至倒计时结束，Bot公布答案并结束游戏；
 
-4. 提前结束游戏：[找不到唐可可|或其他角色名]，仅**游戏发起者**可提前结束游戏；
+4. 提前结束游戏：[找不到唐可可]（或其他角色名），仅**游戏发起者**可提前结束游戏；
 
 5. 各群聊互不影响，每个群聊仅能同时开启一局游戏。
 

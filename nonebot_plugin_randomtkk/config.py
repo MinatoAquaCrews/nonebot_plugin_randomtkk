@@ -1,8 +1,7 @@
 from pydantic import BaseModel, Extra
 from typing import Union, Dict, List
 from pathlib import Path
-from nonebot import logger
-import nonebot
+from nonebot import get_driver, logger
 import httpx
 import aiofiles
 
@@ -16,33 +15,33 @@ class RandomTkkConfig(BaseModel, extra=Extra.ignore):
     max_size: int = 80
     show_coordinate: bool = True
     
-driver = nonebot.get_driver()
+driver = get_driver()
 tkk_config: RandomTkkConfig = RandomTkkConfig.parse_obj(driver.config.dict())
 
 characters: Dict[str, List[str]] = {
-    "honoka": ["高坂穗乃果", "穗乃果"],
-    "eli": ["绚濑绘里", "绘理"],
-    "umi": ["田园海未", "海未"],
+    "honoka": ["高坂穗乃果", "穗乃果", "果皇"],
+    "eli": ["绚濑绘里", "绘理", "会长"],
+    "umi": ["田园海未", "海未", "海爷"],
     "maki": ["西木野真姬", "真姬"],
-    "rin": ["星空凛", "凛"],
-    "hanayo": ["小泉花阳"],
+    "rin": ["星空凛", "凛喵"],
+    "hanayo": ["小泉花阳", "花阳"],
     "nico": ["矢泽妮可", "妮可"],
-    "nozomi": ["东条希"],
+    "nozomi": ["东条希", "希"],
     "kotori": ["南小鸟"],
-    "you": ["渡边曜"],
-    "dia": ["黑泽黛雅"],
-    "riko": ["樱内梨子"],
-    "yoshiko": ["津岛善子"],
-    "ruby": ["黑泽露比"],
-    "hanamaru": ["国木田花丸", "花丸"],
-    "mari": ["小原鞠莉"],
-    "kanan": ["松浦果南"],
-    "chika": ["高海千歌"],
+    "you": ["渡边曜", "曜酱"],
+    "dia": ["黑泽黛雅", "呆雅"],
+    "riko": ["樱内梨子", "梨梨"],
+    "yoshiko": ["津岛善子", "夜羽"],
+    "ruby": ["黑泽露比", "露比"],
+    "hanamaru": ["国木田花丸", "花丸", "小丸"],
+    "mari": ["小原鞠莉", "Mari", "mari"],
+    "kanan": ["松浦果南", "果南"],
+    "chika": ["高海千歌", "千歌"],
     "ren": ["叶月恋"],
-    "sumire": ["平安名堇", "民警"],
-    "chisato": ["岚千砂都", "小千"],
+    "sumire": ["平安名堇", "平安民警", "民警"],
+    "chisato": ["岚千砂都", "千酱", "小千"],
     "kanon": ["涩谷香音", "香音"],
-    "tankuku": ["唐可可", "鲤鱼"]
+    "tankuku": ["唐可可", "上海偶像"]
 }
 
 def find_charac(_name: str) -> Union[str, None]:
@@ -81,8 +80,8 @@ async def download_url(url: str) -> httpx.Response:
                 if response.status_code != 200:
                     continue
                 return response
-            except Exception as e:
-                logger.warning(f"Error occured when downloading {url}, {i+1}/3: {e}")
+            except Exception:
+                logger.warning(f"Error occured when downloading {url}, {i+1}/3")
     
     raise DownloadError("Resource of Random Tankuku plugin missing! Please check!")
 

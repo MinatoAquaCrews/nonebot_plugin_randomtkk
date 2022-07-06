@@ -1,18 +1,17 @@
-from nonebot import on_command, on_regex, on_fullmatch, logger
-from nonebot.adapters.onebot.v11.event import MessageEvent
+from nonebot import on_command, on_regex, on_fullmatch
 from nonebot.typing import T_State
 from typing import List
 from nonebot.matcher import Matcher
-from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import Message, MessageSegment, MessageEvent, GroupMessageEvent
 from nonebot.params import Depends, CommandArg, State, RegexMatched
 from nonebot.rule import Rule
 from .config import find_charac
 from .handler import random_tkk_handler
 
-__randomtkk_vsrsion__ = "v0.1.3a1"
+__randomtkk_vsrsion__ = "v0.1.3rc1"
 __randomtkk_notes__ = f'''
 随机唐可可 {__randomtkk_vsrsion__}
-[随机唐可可]+[简单/普通/困难/地狱/自定义数量] 开启唐可可挑战，不指定难度默认普通模式
+[随机唐可可]+[简单/普通/困难/地狱/自定义数量] 开启寻找唐可可挑战，不指定难度默认普通模式
 答案格式：[答案是][行][空格][列]，例如：答案是114 514
 [找不到唐可可] 发起者可提前结束游戏
 将[唐可可]替换成其他角色可以寻找她们！'''.strip()
@@ -40,7 +39,7 @@ guess_tkk = on_command(cmd="答案是", rule=Rule(inplaying_check), priority=12,
 surrender_tkk = on_regex(pattern="^找不到(.*)$", rule=Rule(starter_check), priority=12, block=True)
 
 @random_tkk.handle()
-async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched(), state: T_State = State()):    
+async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()):    
     uid = str(event.user_id)
     
     if isinstance(event, GroupMessageEvent):
@@ -52,8 +51,7 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
             await matcher.finish("游戏已经开始啦！")
         
     args: List[str] = matched.strip().split()
-    logger.info(args)
-
+    
     user_input_charac = args[0][2:]
     charac = find_charac(user_input_charac)
     if not charac:
@@ -78,7 +76,7 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
     await matcher.send(MessageSegment.image(img_file))
     
     # 确保在此为send，超时回调内还需matcher.finish
-    await matcher.send(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到唐可可]")
+    await matcher.send(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到{user_input_charac}]")
     
 @random_tkk_fullmatch.handle()
 async def _(matcher: Matcher, event: MessageEvent, state: T_State = State()):
