@@ -137,7 +137,7 @@ class RandomTkkHandler:
         '''
         self.timers.pop(uuid, None)
         answer = self.tkk_status[uuid]["answer"]
-        msg = "没人找出来，好可惜啊☹\n" + f"答案是{answer[0]}行{answer[1]}列" + MessageSegment.image(self.tkk_status[uuid]["mark_img"])
+        msg = MessageSegment.text("没人找出来，好可惜啊☹\n") + MessageSegment.text(f"答案是{answer[0]}行{answer[1]}列") + MessageSegment.image(self.tkk_status[uuid]["mark_img"])
              
         if not self.tkk_status.pop(uuid, False):
             await matcher.finish("提前结束游戏出错……")
