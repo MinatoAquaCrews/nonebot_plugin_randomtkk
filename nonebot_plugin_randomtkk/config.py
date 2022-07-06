@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Extra
+from typing import Union, Dict, List
 from pathlib import Path
 from nonebot import logger
 import nonebot
@@ -17,16 +18,15 @@ class RandomTkkConfig(BaseModel, extra=Extra.ignore):
     
 driver = nonebot.get_driver()
 tkk_config: RandomTkkConfig = RandomTkkConfig.parse_obj(driver.config.dict())
-TKK_PATH: Path = tkk_config.tkk_path
 
-characters = {
-    "honoka": "穗乃果",
-    "eli": "绘理",
-    "umi": ["海未"],
+characters: Dict[str, List[str]] = {
+    "honoka": ["高坂穗乃果", "穗乃果"],
+    "eli": ["绚濑绘里", "绘理"],
+    "umi": ["田园海未", "海未"],
     "maki": ["西木野真姬", "真姬"],
     "rin": ["星空凛", "凛"],
-    "hanayo": ["花阳"],
-    "nico": ["妮可"],
+    "hanayo": ["小泉花阳"],
+    "nico": ["矢泽妮可", "妮可"],
     "nozomi": ["东条希"],
     "kotori": ["南小鸟"],
     "you": ["渡边曜"],
@@ -34,16 +34,37 @@ characters = {
     "riko": ["樱内梨子"],
     "yoshiko": ["津岛善子"],
     "ruby": ["黑泽露比"],
-    "hanamaru": ["国木田花丸"],
+    "hanamaru": ["国木田花丸", "花丸"],
     "mari": ["小原鞠莉"],
     "kanan": ["松浦果南"],
     "chika": ["高海千歌"],
     "ren": ["叶月恋"],
-    "sumire": ["平安名堇"],
-    "chisato": ["岚千砂都"],
-    "kanon": ["涩谷香音"],
-    "tankuku": ["唐可可"]
+    "sumire": ["平安名堇", "民警"],
+    "chisato": ["岚千砂都", "小千"],
+    "kanon": ["涩谷香音", "香音"],
+    "tankuku": ["唐可可", "鲤鱼"]
 }
+
+def find_charac(_name: str) -> Union[str, None]:
+    '''
+        Find the character
+    '''
+    for charac in characters:
+        if _name in characters.get(charac):
+            return charac
+    
+    return None
+
+def get_pick_list(_charac: str) -> List[str]:
+    '''
+        Get the random character list except character _charac
+    '''
+    pick: List[str] = []
+    for charac in characters:
+        if _charac != charac:
+            pick.append(charac)
+    
+    return pick
 
 class DownloadError(Exception):
     def __init__(self, msg):
@@ -63,10 +84,10 @@ async def download_url(url: str) -> httpx.Response:
             except Exception as e:
                 logger.warning(f"Error occured when downloading {url}, {i+1}/3: {e}")
     
-    raise DownloadError("Resource of Tankuku plugin missing! Please check!")
+    raise DownloadError("Resource of Random Tankuku plugin missing! Please check!")
 
 @driver.on_startup
-async def _():
+async def _() -> None:
     tkk_path: Path = tkk_config.tkk_path
     
     if not tkk_path.exists():
