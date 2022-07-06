@@ -80,7 +80,7 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
     await matcher.send(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到{user_input_charac}]")
     
 @random_tkk_fullmatch.handle()
-async def _(matcher: Matcher, event: MessageEvent, state: T_State = State()):
+async def _(matcher: Matcher, event: MessageEvent):
     uid = str(event.user_id)
     
     if isinstance(event, GroupMessageEvent):
