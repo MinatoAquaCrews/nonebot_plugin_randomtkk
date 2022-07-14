@@ -87,23 +87,21 @@ class RandomTkkHandler:
                 if r == row - 1 and c == col - 1:
                     charac = Image.open(tkk_config.tkk_path / (_charac + ".png"))
                     charac = charac.resize((64, 64), Image.ANTIALIAS) # 加载icon
-                    if self.tkk_config.show_coordinate:
-                        draw = ImageDraw.Draw(charac)
-                        draw.text((20, 40), f"({c+1},{r+1})", font=font, fill=(255, 0, 0, 0))
+                    draw = ImageDraw.Draw(charac)
+                    draw.text((20, 40), f"({c+1},{r+1})", font=font, fill=(255, 0, 0, 0))
                     base.paste(charac, (r * 64, c * 64))
                     temp += 1
                 else:
                     icon = Image.open(tkk_config.tkk_path / (random.choice(pick_list) + '.png'))
                     icon = icon.resize((64,64), Image.ANTIALIAS)
-                    if self.tkk_config.show_coordinate:
-                        draw = ImageDraw.Draw(icon)
-                        draw.text((20, 40), f"({c+1},{r+1})", font=font, fill=(255, 0, 0, 0))
+                    draw = ImageDraw.Draw(icon)
+                    draw.text((20, 40), f"({c+1},{r+1})", font=font, fill=(255, 0, 0, 0))
                     base.paste(icon, (r * 64, c * 64))
         
         buf = BytesIO()
         base.save(buf, format='png')
         
-        base2 = base.copy()
+        base2: Image.Image = base.copy()
         mark = Image.open(tkk_config.tkk_path / "mark.png")
 
         base2.paste(mark,((row - 1) * 64, (col - 1) * 64), mark)

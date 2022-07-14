@@ -13,7 +13,6 @@ class RandomTkkConfig(BaseModel, extra=Extra.ignore):
     hard_size: int = 40
     extreme_size: int = 60
     max_size: int = 80
-    show_coordinate: bool = True
     
 driver = get_driver()
 tkk_config: RandomTkkConfig = RandomTkkConfig.parse_obj(driver.config.dict())
@@ -27,7 +26,7 @@ characters: Dict[str, List[str]] = {
     "hanayo": ["小泉花阳", "花阳"],
     "nico": ["矢泽妮可", "妮可"],
     "nozomi": ["东条希", "希"],
-    "kotori": ["南小鸟"],
+    "kotori": ["南小鸟", "南琴梨"],
     "you": ["渡边曜", "曜酱"],
     "dia": ["黑泽黛雅", "呆雅"],
     "riko": ["樱内梨子", "梨梨"],
@@ -37,7 +36,7 @@ characters: Dict[str, List[str]] = {
     "mari": ["小原鞠莉", "Mari", "mari"],
     "kanan": ["松浦果南", "果南"],
     "chika": ["高海千歌", "千歌"],
-    "ren": ["叶月恋"],
+    "ren": ["叶月恋", "小恋"],
     "sumire": ["平安名堇", "平安民警", "民警"],
     "chisato": ["岚千砂都", "千酱", "小千"],
     "kanon": ["涩谷香音", "香音"],

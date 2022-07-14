@@ -1,4 +1,4 @@
-from nonebot import on_command, on_regex, on_fullmatch
+from nonebot import on_command, on_regex
 from nonebot.typing import T_State
 from typing import List
 from nonebot.matcher import Matcher
@@ -8,9 +8,9 @@ from nonebot.rule import Rule
 from .config import find_charac
 from .handler import random_tkk_handler
 
-__randomtkk_vsrsion__ = "v0.1.3rc1"
+__randomtkk_version__ = "v0.1.3"
 __randomtkk_notes__ = f'''
-随机唐可可 {__randomtkk_vsrsion__}
+随机唐可可 {__randomtkk_version__}
 [随机唐可可]+[简单/普通/困难/地狱/自定义数量] 开启寻找唐可可挑战
 不指定难度则默认普通
 答案格式：[答案是][行][空格][列]，例如：答案是114 514
@@ -35,7 +35,7 @@ def starter_check(event: MessageEvent) -> bool:
     return random_tkk_handler.check_starter(gid, uid)
 
 random_tkk = on_regex(pattern="^随机(.*) (帮助|简单|普通|困难|地狱|\d{1,2})?$", priority=12)
-random_tkk_fullmatch = on_fullmatch(msg="随机唐可可", priority=12)
+random_tkk_omit = on_regex(pattern="^随机(.*)$", priority=12)
 guess_tkk = on_command(cmd="答案是", rule=Rule(inplaying_check), priority=12, block=True)
 surrender_tkk = on_regex(pattern="^找不到(.*)$", rule=Rule(starter_check), priority=12, block=True)
 
@@ -53,10 +53,10 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
         
     args: List[str] = matched.strip().split()
     
-    user_input_charac = args[0][2:]
-    charac = find_charac(user_input_charac)
+    _charac = args[0][2:]
+    charac = find_charac(_charac)
     if not charac:
-        await matcher.finish(f"角色名 {user_input_charac} 不存在，是不是记错名字了？")
+        await matcher.finish(f"角色名 {_charac} 不存在，是不是记错名字了？")
         
     if len(args) == 1:
         await matcher.send("未指定难度，默认普通模式")
@@ -70,38 +70,46 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
         await matcher.finish("参数太多啦~")
     
     if isinstance(event, GroupMessageEvent):
-        img_file, waiting = random_tkk_handler.one_go(matcher, gid, uid, level, user_input_charac)
+        img_file, waiting = random_tkk_handler.one_go(matcher, gid, uid, level, _charac)
     else:
-        img_file, waiting = random_tkk_handler.one_go(matcher, uid, uid, level, user_input_charac)
+        img_file, waiting = random_tkk_handler.one_go(matcher, uid, uid, level, _charac)
     
     await matcher.send(MessageSegment.image(img_file))
     
     # 确保在此为send，超时回调内还需matcher.finish
-    await matcher.send(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到{user_input_charac}]")
+    await matcher.send(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到{_charac}]")
     
-@random_tkk_fullmatch.handle()
-async def _(matcher: Matcher, event: MessageEvent):
+@random_tkk_omit.handle()
+async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()):
+    if matched[-2:] == "帮助":
+        await matcher.finish(__randomtkk_notes__)
+
+    _charac = matched[2:]
     uid = str(event.user_id)
+    gid = str(event.group_id)
     
     if isinstance(event, GroupMessageEvent):
-        gid = str(event.group_id)
         if random_tkk_handler.check_tkk_playing(gid):
             await matcher.finish("游戏已经开始啦！", at_sender=True)
     else:
         if random_tkk_handler.check_tkk_playing(uid):
             await matcher.finish("游戏已经开始啦！")
 
+    charac = find_charac(_charac)
+    if not charac:
+        await matcher.finish(f"角色名 {_charac} 不存在，是不是记错名字了？")
+        
     await matcher.send("未指定难度，默认普通模式")
     
     if isinstance(event, GroupMessageEvent):
-        img_file, waiting = random_tkk_handler.one_go(matcher, gid, uid, "普通", "唐可可")
+        img_file, waiting = random_tkk_handler.one_go(matcher, gid, uid, "普通", _charac)
     else:
-        img_file, waiting = random_tkk_handler.one_go(matcher, uid, uid, "普通", "唐可可")
+        img_file, waiting = random_tkk_handler.one_go(matcher, uid, uid, "普通", _charac)
     
     await matcher.send(MessageSegment.image(img_file))
     
     # 确保在此为send，超时回调内还需matcher.finish
-    await matcher.send(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到唐可可]")
+    await matcher.send(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到{_charac}]")
 
 async def get_user_guess(args: Message = CommandArg(), state: T_State = State()):
     args = args.extract_plain_text().strip().split()
