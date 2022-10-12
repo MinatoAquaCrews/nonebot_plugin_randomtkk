@@ -19,7 +19,7 @@ _🎶 随机唐可可 🎶_
     <img src="https://img.shields.io/badge/nonebot2-2.0.0beta.2+-green">
   </a>
 
-  <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.3">
+  <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.4a1">
     <img src="https://img.shields.io/github/v/release/MinatoAquaCrews/nonebot_plugin_randomtkk?color=orange">
   </a>
 
@@ -31,11 +31,11 @@ _🎶 随机唐可可 🎶_
 
 ## 版本
 
-v0.1.3
+v0.1.4a1
 
-⚠ 适配nonebot2-2.0.0beta.2+
+⚠ 适配nonebot2-2.0.0b3+
 
-[更新日志](https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.3)
+[更新日志](https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.4a1)
 
 ## 安装
 

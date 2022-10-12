@@ -12,7 +12,7 @@ class RandomTkkHandler:
     def __init__(self):
         self.tkk_config = tkk_config
         self.timers: Dict[str, asyncio.TimerHandle] = dict()
-        self.tkk_status: Dict[str, Union[bool, str, List[int], bytes]] = dict()
+        self.tkk_status: Dict[str, Union[str, bool, List[int], bytes]] = dict()
         
     def _config_tkk_size(self, level: str) -> int:
         '''
@@ -79,7 +79,7 @@ class RandomTkkHandler:
         temp: int = 0
         font: ImageFont.FreeTypeFont = ImageFont.truetype(str(tkk_config.tkk_path / "msyh.ttc"), 16)
         base: Image.Image = Image.new("RGB",(64 * tkk_size, 64 * tkk_size))
-        _charac: str = find_charac(_find_charac)
+        _charac: str = find_charac(_find_charac)  # type: ignore
         pick_list: List[str] = get_pick_list(_charac)
         
         for r in range(0, tkk_size):
@@ -134,7 +134,7 @@ class RandomTkkHandler:
             超时无正确答案，结算游戏: 移除定时器、公布答案
         '''
         self.timers.pop(uuid, None)
-        answer = self.tkk_status[uuid]["answer"]
+        answer: List[int] = self.tkk_status[uuid]["answer"]
         msg = MessageSegment.text("没人找出来，好可惜啊☹\n") + MessageSegment.text(f"答案是{answer[0]}行{answer[1]}列") + MessageSegment.image(self.tkk_status[uuid]["mark_img"])
              
         if not self.tkk_status.pop(uuid, False):
@@ -149,11 +149,12 @@ class RandomTkkHandler:
         timer = self.timers.get(uuid, None)
         if timer:
             timer.cancel()
+        
         loop = asyncio.get_running_loop()
         timer = loop.call_later(
             timeout, lambda: asyncio.ensure_future(self._timeout_close_game(matcher, uuid))
         )
-        self.timers[uuid] = timer
+        self.timers.update({uuid: timer})
         
     def bingo_close_game(self, uuid: str) -> bool:
         '''
@@ -183,20 +184,18 @@ class RandomTkkHandler:
         waiting = self._get_waiting_time(tkk_size)
         img_file, mark_file = self._draw_tkk(row, col, tkk_size, find_charac)
         
-        self.tkk_status[uuid] = {
-            "playing": True,
-            "starter": uid,
-            "character": find_charac,
-            "answer": [col, row],
-            "mark_img": mark_file
-        }
-
+        self.tkk_status.update({
+            uuid: {
+                "playing": True,
+                "starter": uid,
+                "character": find_charac,
+                "answer": [col, row],
+                "mark_img": mark_file
+            }
+        })
+        
         # 开启倒计时
         self._start_timer(matcher, uuid, waiting)
         return img_file, waiting
 
 random_tkk_handler = RandomTkkHandler()
-
-__all__ = [
-    random_tkk_handler
-]

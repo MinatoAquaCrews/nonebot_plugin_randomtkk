@@ -3,12 +3,12 @@ from nonebot.typing import T_State
 from typing import List
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import Message, MessageSegment, MessageEvent, GroupMessageEvent
-from nonebot.params import Depends, CommandArg, State, RegexMatched
+from nonebot.params import Depends, CommandArg, RegexMatched
 from nonebot.rule import Rule
 from .config import find_charac
 from .handler import random_tkk_handler
 
-__randomtkk_version__ = "v0.1.3"
+__randomtkk_version__ = "v0.1.4a1"
 __randomtkk_notes__ = f'''
 随机唐可可 {__randomtkk_version__}
 [随机唐可可]+[简单/普通/困难/地狱/自定义数量] 开启寻找唐可可挑战
@@ -18,30 +18,26 @@ __randomtkk_notes__ = f'''
 将[唐可可]替换成其他角色可以寻找她们！'''.strip()
 
 def inplaying_check(event: MessageEvent) -> bool:
-    if isinstance(event, GroupMessageEvent):
-        uuid = str(event.group_id)
-    else:
-        uuid = str(event.user_id)
-        
+    uuid: str = str(event.group_id) if isinstance(event, GroupMessageEvent) else str(event.user_id)  
     return random_tkk_handler.check_tkk_playing(uuid)
 
 def starter_check(event: MessageEvent) -> bool:
-    uid = str(event.user_id)
-    if isinstance(event, GroupMessageEvent):
-        gid = str(event.group_id)
-    else:
-        gid = None
-        
+    uid: str = str(event.user_id)
+    gid = str(event.group_id) if isinstance(event, GroupMessageEvent) else None       
     return random_tkk_handler.check_starter(gid, uid)
 
-random_tkk = on_regex(pattern="^随机(.*) (帮助|简单|普通|困难|地狱|\d{1,2})?$", priority=12)
-random_tkk_omit = on_regex(pattern="^随机(.*)$", priority=12)
+def characters_check(name: str) -> bool:
+    return True if find_charac(name) else False
+
+random_tkk = on_regex(pattern="^随机(.*) (帮助|简单|普通|困难|地狱|\d{1,2})?$", rule=Rule(characters_check), priority=12)
+random_tkk_omit = on_regex(pattern="^随机(.*)$", rule=Rule(characters_check), priority=12)
 guess_tkk = on_command(cmd="答案是", rule=Rule(inplaying_check), priority=12, block=True)
 surrender_tkk = on_regex(pattern="^找不到(.*)$", rule=Rule(starter_check), priority=12, block=True)
 
 @random_tkk.handle()
 async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()):    
-    uid = str(event.user_id)
+    uid: str = str(event.user_id)
+    gid: str = ""
     
     if isinstance(event, GroupMessageEvent):
         gid = str(event.group_id)
@@ -49,7 +45,7 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
             await matcher.finish("游戏已经开始啦！", at_sender=True)
     else:
         if random_tkk_handler.check_tkk_playing(uid):
-            await matcher.finish("游戏已经开始啦！")
+            await matcher.finish("游戏已经开始啦！") # TODO 游戏已经开始啦！多次触发
         
     args: List[str] = matched.strip().split()
     
@@ -84,11 +80,12 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
     if matched[-2:] == "帮助":
         await matcher.finish(__randomtkk_notes__)
 
-    _charac = matched[2:]
-    uid = str(event.user_id)
-    gid = str(event.group_id)
+    _charac: str = matched[2:]
+    uid: str = str(event.user_id)
+    gid: str = ""
     
     if isinstance(event, GroupMessageEvent):
+        gid = str(event.group_id)
         if random_tkk_handler.check_tkk_playing(gid):
             await matcher.finish("游戏已经开始啦！", at_sender=True)
     else:

@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Extra
 from typing import Union, Dict, List
 from pathlib import Path
-from nonebot import get_driver, logger
+from nonebot import get_driver
+from nonebot.log import logger
 import httpx
 import aiofiles
 
@@ -48,7 +49,7 @@ def find_charac(_name: str) -> Union[str, None]:
         Find the character
     '''
     for charac in characters:
-        if _name in characters.get(charac):
+        if _name in characters[charac]:
             return charac
     
     return None
@@ -91,7 +92,7 @@ async def _() -> None:
     if not tkk_path.exists():
         tkk_path.mkdir(parents=True, exist_ok=True)
         
-    url = "https://raw.fastgit.org/MinatoAquaCrews/nonebot_plugin_randomtkk/main/nonebot_plugin_randomtkk/resource/"
+    url: str = "https://raw.fastgit.org/MinatoAquaCrews/nonebot_plugin_randomtkk/main/nonebot_plugin_randomtkk/resource/"
     
     for chara in characters:
         _name = chara + ".png"
