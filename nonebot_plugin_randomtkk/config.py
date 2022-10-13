@@ -34,7 +34,7 @@ characters: Dict[str, List[str]] = {
     "yoshiko": ["津岛善子", "夜羽"],
     "ruby": ["黑泽露比", "露比"],
     "hanamaru": ["国木田花丸", "花丸", "小丸"],
-    "mari": ["小原鞠莉", "Mari", "mari"],
+    "mari": ["小原鞠莉"],
     "kanan": ["松浦果南", "果南"],
     "chika": ["高海千歌", "千歌"],
     "ren": ["叶月恋", "小恋"],
@@ -49,7 +49,8 @@ def find_charac(_name: str) -> Union[str, None]:
         Find the character
     '''
     for charac in characters:
-        if _name in characters[charac]:
+        # That _name is the characters dict key is also OK
+        if _name == charac or _name in characters[charac]:
             return charac
     
     return None

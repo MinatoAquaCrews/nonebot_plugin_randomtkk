@@ -21,6 +21,10 @@ def inplaying_check(event: MessageEvent) -> bool:
     uuid: str = str(event.group_id) if isinstance(event, GroupMessageEvent) else str(event.user_id)  
     return random_tkk_handler.check_tkk_playing(uuid)
 
+def unplaying_check(event: MessageEvent) -> bool:
+    uuid: str = str(event.group_id) if isinstance(event, GroupMessageEvent) else str(event.user_id)  
+    return not random_tkk_handler.check_tkk_playing(uuid)
+
 def starter_check(event: MessageEvent) -> bool:
     uid: str = str(event.user_id)
     gid = str(event.group_id) if isinstance(event, GroupMessageEvent) else None       
@@ -29,30 +33,28 @@ def starter_check(event: MessageEvent) -> bool:
 def characters_check(name: str) -> bool:
     return True if find_charac(name) else False
 
-random_tkk = on_regex(pattern="^随机(.*) (帮助|简单|普通|困难|地狱|\d{1,2})?$", rule=Rule(characters_check), priority=12)
-random_tkk_omit = on_regex(pattern="^随机(.*)$", rule=Rule(characters_check), priority=12)
+random_tkk = on_regex(pattern="^随机\S{1,8} (帮助|简单|普通|困难|地狱|\d{1,2})?$", rule=Rule(characters_check), priority=12)
+random_tkk_default = on_regex(pattern="^随机\S{1,8}$", rule=Rule(characters_check), priority=12)
 guess_tkk = on_command(cmd="答案是", rule=Rule(inplaying_check), priority=12, block=True)
-surrender_tkk = on_regex(pattern="^找不到(.*)$", rule=Rule(starter_check), priority=12, block=True)
+surrender_tkk = on_regex(pattern="^找不到\S{1,8}$", rule=Rule(inplaying_check, starter_check), priority=12, block=True)
 
 @random_tkk.handle()
 async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()):    
     uid: str = str(event.user_id)
     gid: str = ""
     
+    # Check whether the game has started
     if isinstance(event, GroupMessageEvent):
         gid = str(event.group_id)
         if random_tkk_handler.check_tkk_playing(gid):
             await matcher.finish("游戏已经开始啦！", at_sender=True)
     else:
         if random_tkk_handler.check_tkk_playing(uid):
-            await matcher.finish("游戏已经开始啦！") # TODO 游戏已经开始啦！多次触发
+            await matcher.finish("游戏已经开始啦！")
         
     args: List[str] = matched.strip().split()
     
-    _charac = args[0][2:]
-    charac = find_charac(_charac)
-    if not charac:
-        await matcher.finish(f"角色名 {_charac} 不存在，是不是记错名字了？")
+    _charac: str = args[0][2:]
         
     if len(args) == 1:
         await matcher.send("未指定难度，默认普通模式")
@@ -75,7 +77,7 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
     # 确保在此为send，超时回调内还需matcher.finish
     await matcher.send(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到{_charac}]")
     
-@random_tkk_omit.handle()
+@random_tkk_default.handle()
 async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()):
     if matched[-2:] == "帮助":
         await matcher.finish(__randomtkk_notes__)
@@ -84,6 +86,7 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
     uid: str = str(event.user_id)
     gid: str = ""
     
+    # Check whether the game has started
     if isinstance(event, GroupMessageEvent):
         gid = str(event.group_id)
         if random_tkk_handler.check_tkk_playing(gid):
@@ -91,10 +94,6 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
     else:
         if random_tkk_handler.check_tkk_playing(uid):
             await matcher.finish("游戏已经开始啦！")
-
-    charac = find_charac(_charac)
-    if not charac:
-        await matcher.finish(f"角色名 {_charac} 不存在，是不是记错名字了？")
         
     await matcher.send("未指定难度，默认普通模式")
     
@@ -108,7 +107,7 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
     # 确保在此为send，超时回调内还需matcher.finish
     await matcher.send(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到{_charac}]")
 
-async def get_user_guess(args: Message = CommandArg(), state: T_State = State()):
+async def get_user_guess(args: Message = CommandArg()):
     args = args.extract_plain_text().strip().split()
 
     if not args:
@@ -122,9 +121,7 @@ async def get_user_guess(args: Message = CommandArg(), state: T_State = State())
         await guess_tkk.finish("参数太多啦~")
 
 @guess_tkk.handle()
-async def _(event: MessageEvent, state: T_State = Depends(get_user_guess)): 
-    pos = state["guess"]
-
+async def _(event: MessageEvent, pos: List[int] = Depends(get_user_guess)):
     if isinstance(event, GroupMessageEvent):
         gid = str(event.group_id)
         if random_tkk_handler.check_answer(gid, pos):
