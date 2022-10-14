@@ -29,16 +29,13 @@ def starter_check(event: MessageEvent) -> bool:
     gid = str(event.group_id) if isinstance(event, GroupMessageEvent) else None       
     return random_tkk_handler.check_starter(gid, uid)
 
-def characters_check(name: str) -> bool:
-    return True if find_charac(name) else False
-
 random_tkk = on_regex(pattern="^随机\S{1,8}\s{1}(帮助|简单|普通|困难|地狱|\d{1,2})$", priority=12)
 random_tkk_default = on_regex(pattern="^随机\S{1,8}$", priority=12)
 guess_tkk = on_command(cmd="答案是", rule=Rule(inplaying_check), priority=12, block=True)
 surrender_tkk = on_regex(pattern="^找不到\S{1,8}$", rule=Rule(inplaying_check, starter_check), priority=12, block=True)
 
 @random_tkk.handle()
-async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()):    
+async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()):
     uid: str = str(event.user_id)
     gid: str = ""
     
@@ -50,10 +47,11 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
     else:
         if random_tkk_handler.check_tkk_playing(uid):
             await matcher.finish("游戏已经开始啦！")
-        
-    args: List[str] = matched.strip().split()
     
+    args: List[str] = matched.strip().split()
     _charac: str = args[0][2:]
+    if not find_charac(_charac):
+        await matcher.finish(f"角色名 {_charac} 不存在，是不是记错名字了？")
         
     if len(args) == 1:
         await matcher.send("未指定难度，默认普通模式")
@@ -80,8 +78,7 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
 async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()):
     if matched[-2:] == "帮助":
         await matcher.finish(__randomtkk_notes__)
-
-    _charac: str = matched[2:]
+        
     uid: str = str(event.user_id)
     gid: str = ""
     
@@ -93,7 +90,11 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
     else:
         if random_tkk_handler.check_tkk_playing(uid):
             await matcher.finish("游戏已经开始啦！")
-        
+    
+    _charac: str = matched[2:]
+    if not find_charac(_charac):
+        await matcher.finish(f"角色名 {_charac} 不存在，是不是记错名字了？")
+
     await matcher.send("未指定难度，默认普通模式")
     
     if isinstance(event, GroupMessageEvent):
