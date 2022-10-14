@@ -2,10 +2,10 @@ from typing import Tuple, List, Dict, Union, Optional
 from PIL import Image, ImageFont, ImageDraw
 from io import BytesIO
 from nonebot.matcher import Matcher
-from nonebot.adapters.onebot.v11 import MessageSegment
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 import random
 import asyncio
-from .config import tkk_config, find_charac, get_pick_list
+from .config import tkk_config, find_charac, other_characs_list
 
 class RandomTkkHandler:
     
@@ -80,7 +80,7 @@ class RandomTkkHandler:
         font: ImageFont.FreeTypeFont = ImageFont.truetype(str(tkk_config.tkk_path / "msyh.ttc"), 16)
         base: Image.Image = Image.new("RGB",(64 * tkk_size, 64 * tkk_size))
         _charac: str = find_charac(_find_charac)  # type: ignore
-        pick_list: List[str] = get_pick_list(_charac)
+        pick_list: List[str] = other_characs_list(_charac)
         
         for r in range(0, tkk_size):
             for c in range(0, tkk_size):
@@ -133,9 +133,13 @@ class RandomTkkHandler:
         '''
             超时无正确答案，结算游戏: 移除定时器、公布答案
         '''
-        self.timers.pop(uuid, None)
+        try:
+            self.timers.pop(uuid, None)
+        except KeyError:
+            await matcher.finish("提前结束游戏出错……")
+        
         answer: List[int] = self.tkk_status[uuid]["answer"]
-        msg = MessageSegment.text("没人找出来，好可惜啊☹\n") + MessageSegment.text(f"答案是{answer[0]}行{answer[1]}列") + MessageSegment.image(self.tkk_status[uuid]["mark_img"])
+        msg: Message = MessageSegment.text("没人找出来，好可惜啊☹\n") + MessageSegment.text(f"答案是{answer[0]}行{answer[1]}列") + MessageSegment.image(self.tkk_status[uuid]["mark_img"])
              
         if not self.tkk_status.pop(uuid, False):
             await matcher.finish("提前结束游戏出错……")
@@ -144,7 +148,7 @@ class RandomTkkHandler:
 
     def _start_timer(self, matcher: Matcher, uuid: str, timeout: int) -> None:
         '''
-            开启超时定时器 回调函数_timeout_close_game
+            开启超时定时器，回调函数：_timeout_close_game
         '''
         timer = self.timers.get(uuid, None)
         if timer:
@@ -165,10 +169,11 @@ class RandomTkkHandler:
             if timer:
                 timer.cancel()
             self.timers.pop(uuid, None)
-        except Exception:
+            self.tkk_status.pop(uuid, False)
+        except KeyError:
             return False
         
-        return self.tkk_status.pop(uuid, False)
+        return True
     
     def one_go(self, matcher: Matcher, uuid: str, uid: str, level: str, find_charac: str) -> Tuple[bytes, int]:
         '''
@@ -194,8 +199,9 @@ class RandomTkkHandler:
             }
         })
         
-        # 开启倒计时
+        # Start countdown
         self._start_timer(matcher, uuid, waiting)
+        
         return img_file, waiting
 
 random_tkk_handler = RandomTkkHandler()

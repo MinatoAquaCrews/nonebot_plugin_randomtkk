@@ -55,7 +55,7 @@ def find_charac(_name: str) -> Union[str, None]:
     
     return None
 
-def get_pick_list(_charac: str) -> List[str]:
+def other_characs_list(_charac: str) -> List[str]:
     '''
         Get the random character list except character _charac
     '''
@@ -87,7 +87,7 @@ async def download_url(url: str) -> httpx.Response:
     raise DownloadError("Resource of Random Tankuku plugin missing! Please check!")
 
 @driver.on_startup
-async def _() -> None:
+async def _():
     tkk_path: Path = tkk_config.tkk_path
     
     if not tkk_path.exists():
@@ -96,7 +96,7 @@ async def _() -> None:
     url: str = "https://raw.fastgit.org/MinatoAquaCrews/nonebot_plugin_randomtkk/main/nonebot_plugin_randomtkk/resource/"
     
     for chara in characters:
-        _name = chara + ".png"
+        _name: str = chara + ".png"
         if not (tkk_path / _name).exists():
             response = await download_url(url + _name)
             await save_resource(_name, response)

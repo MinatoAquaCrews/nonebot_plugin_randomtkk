@@ -1,5 +1,4 @@
 from nonebot import on_command, on_regex
-from nonebot.typing import T_State
 from typing import List
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import Message, MessageSegment, MessageEvent, GroupMessageEvent
@@ -33,8 +32,8 @@ def starter_check(event: MessageEvent) -> bool:
 def characters_check(name: str) -> bool:
     return True if find_charac(name) else False
 
-random_tkk = on_regex(pattern="^随机\S{1,8} (帮助|简单|普通|困难|地狱|\d{1,2})?$", rule=Rule(characters_check), priority=12)
-random_tkk_default = on_regex(pattern="^随机\S{1,8}$", rule=Rule(characters_check), priority=12)
+random_tkk = on_regex(pattern="^随机\S{1,8}\s{1}(帮助|简单|普通|困难|地狱|\d{1,2})$", priority=12)
+random_tkk_default = on_regex(pattern="^随机\S{1,8}$", priority=12)
 guess_tkk = on_command(cmd="答案是", rule=Rule(inplaying_check), priority=12, block=True)
 surrender_tkk = on_regex(pattern="^找不到\S{1,8}$", rule=Rule(inplaying_check, starter_check), priority=12, block=True)
 
@@ -107,48 +106,51 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
     # 确保在此为send，超时回调内还需matcher.finish
     await matcher.send(f"将在 {waiting}s 后公布答案\n答案格式：[答案是][行][空格][列]\n例如：答案是114 514\n提前结束游戏请发起者输入[找不到{_charac}]")
 
-async def get_user_guess(args: Message = CommandArg()):
-    args = args.extract_plain_text().strip().split()
+async def get_user_guess(args: Message = CommandArg()) -> List[int]:
+    arg: List[str] = args.extract_plain_text().strip().split()
 
-    if not args:
+    if not arg:
         await guess_tkk.finish("答案是啥捏？")
-    elif len(args) == 1:    
+    elif len(arg) == 1:    
         await guess_tkk.finish("答案格式错误~")
-    elif len(args) == 2:
-        args = [int(x) for x in args]   # 类型转换str -> int
-        return {**state, "guess": args}
+    elif len(arg) == 2:
+        arg_list: List[int] = [int(x) for x in arg]
+        return arg_list
     else:
         await guess_tkk.finish("参数太多啦~")
 
 @guess_tkk.handle()
 async def _(event: MessageEvent, pos: List[int] = Depends(get_user_guess)):
     if isinstance(event, GroupMessageEvent):
-        gid = str(event.group_id)
+        gid: str = str(event.group_id)
+        
         if random_tkk_handler.check_answer(gid, pos):
             if not random_tkk_handler.bingo_close_game(gid):
                 await guess_tkk.finish("结束游戏出错……")
+            
             await guess_tkk.finish("答对啦，好厉害！", at_sender=True)
         else:
             await guess_tkk.finish("不对哦~", at_sender=True)
     else:
-        uid = str(event.user_id)
+        uid: str = str(event.user_id)
         if random_tkk_handler.check_answer(uid, pos):
             if not random_tkk_handler.bingo_close_game(uid):
                 await guess_tkk.finish("结束游戏出错……")
+            
             await guess_tkk.finish("答对啦，好厉害！")
         else:
             await guess_tkk.finish("不对哦~")
         
 @surrender_tkk.handle()
 async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()):
-    arg = matched[3:]
+    arg: str = matched[3:]
     
     if isinstance(event, GroupMessageEvent):
-        gid = str(event.group_id)
+        gid: str = str(event.group_id)
         if random_tkk_handler.check_surrender_charac(gid, arg):
             await random_tkk_handler.surrender(matcher, gid)
     else:
-        uid = str(event.user_id)
+        uid: str = str(event.user_id)
         if random_tkk_handler.check_surrender_charac(uid, arg):
             await random_tkk_handler.surrender(matcher, uid)
     
