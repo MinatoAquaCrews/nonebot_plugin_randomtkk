@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Extra
 from typing import Union, Dict, List
 from pathlib import Path
-from nonebot import get_driver, logger
+from nonebot import get_driver
+from nonebot.log import logger
 import httpx
 import aiofiles
 
@@ -33,7 +34,7 @@ characters: Dict[str, List[str]] = {
     "yoshiko": ["津岛善子", "夜羽"],
     "ruby": ["黑泽露比", "露比"],
     "hanamaru": ["国木田花丸", "花丸", "小丸"],
-    "mari": ["小原鞠莉", "Mari", "mari"],
+    "mari": ["小原鞠莉"],
     "kanan": ["松浦果南", "果南"],
     "chika": ["高海千歌", "千歌"],
     "ren": ["叶月恋", "小恋"],
@@ -43,17 +44,18 @@ characters: Dict[str, List[str]] = {
     "tankuku": ["唐可可", "上海偶像"]
 }
 
-def find_charac(_name: str) -> Union[str, None]:
+def find_charac(_name: str) -> Union[str, bool]:
     '''
         Find the character
     '''
     for charac in characters:
-        if _name in characters.get(charac):
+        # That _name is the characters dict key is also OK
+        if _name == charac or _name in characters[charac]:
             return charac
     
-    return None
+    return False
 
-def get_pick_list(_charac: str) -> List[str]:
+def other_characs_list(_charac: str) -> List[str]:
     '''
         Get the random character list except character _charac
     '''
@@ -85,16 +87,16 @@ async def download_url(url: str) -> httpx.Response:
     raise DownloadError("Resource of Random Tankuku plugin missing! Please check!")
 
 @driver.on_startup
-async def _() -> None:
+async def _():
     tkk_path: Path = tkk_config.tkk_path
     
     if not tkk_path.exists():
         tkk_path.mkdir(parents=True, exist_ok=True)
         
-    url = "https://raw.fastgit.org/MinatoAquaCrews/nonebot_plugin_randomtkk/main/nonebot_plugin_randomtkk/resource/"
+    url: str = "https://raw.fastgit.org/MinatoAquaCrews/nonebot_plugin_randomtkk/main/nonebot_plugin_randomtkk/resource/"
     
     for chara in characters:
-        _name = chara + ".png"
+        _name: str = chara + ".png"
         if not (tkk_path / _name).exists():
             response = await download_url(url + _name)
             await save_resource(_name, response)

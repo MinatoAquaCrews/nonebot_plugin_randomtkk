@@ -16,10 +16,10 @@ _🎶 随机唐可可 🎶_
   </a>
 
   <a href="https://github.com/nonebot/nonebot2">
-    <img src="https://img.shields.io/badge/nonebot2-2.0.0beta.2+-green">
+    <img src="https://img.shields.io/badge/nonebot2-2.0.0beta.3+-green">
   </a>
 
-  <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.3">
+  <a href="https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.4">
     <img src="https://img.shields.io/github/v/release/MinatoAquaCrews/nonebot_plugin_randomtkk?color=orange">
   </a>
 
@@ -31,11 +31,11 @@ _🎶 随机唐可可 🎶_
 
 ## 版本
 
-v0.1.3
+v0.1.4
 
-⚠ 适配nonebot2-2.0.0beta.2+
+⚠ 适配nonebot2-2.0.0b3+
 
-[更新日志](https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.3)
+[更新日志](https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/releases/tag/v0.1.4)
 
 ## 安装
 
@@ -50,7 +50,7 @@ v0.1.3
 3. 可更改默认配置：
 
     ```python
-    TKK_PATH="./data/resource"  # 资源路径
+    TKK_PATH="./data/resource"  # 资源路径，可自行修改
     EASY_SIZE=10                # 简单
     NORMAL_SIZE=20              # 普通
     HARD_SIZE=40                # 困难
@@ -59,8 +59,6 @@ v0.1.3
     ```
 
     注意图片最小尺寸为10，最大尺寸可通过`MAX_SIZE`修改（默认80，不要超过99，否则无法指定），但生成时间会变长；
-    
-    ⚠ 原`SHOW_COORDINATE`（开启会在生成的图片方阵中显示坐标）配置移除
     
 4. 缺失资源时会尝试从repo中下载至指定路径。
 
@@ -84,7 +82,7 @@ v0.1.3
 
 3. 输入答案：[答案是][行][空格][列]，行列为具体数字，例如：答案是114 514；
 
-4. 答案正确则结束此次游戏；不正确则直至倒计时结束，Bot公布答案并结束游戏；
+4. 答案正确则结束此次游戏；若不正确，则直至倒计时结束，Bot公布答案并结束游戏；
 
 5. 提前结束游戏：[找不到唐可可]（或其他角色名，需要与开启时输入的角色名相同），仅**游戏发起者**可提前结束游戏；
 
