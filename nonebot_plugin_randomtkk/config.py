@@ -44,7 +44,7 @@ characters: Dict[str, List[str]] = {
     "tankuku": ["唐可可", "上海偶像"]
 }
 
-def find_charac(_name: str) -> Union[str, None]:
+def find_charac(_name: str) -> Union[str, bool]:
     '''
         Find the character
     '''
@@ -53,7 +53,7 @@ def find_charac(_name: str) -> Union[str, None]:
         if _name == charac or _name in characters[charac]:
             return charac
     
-    return None
+    return False
 
 def other_characs_list(_charac: str) -> List[str]:
     '''

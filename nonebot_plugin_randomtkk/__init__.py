@@ -29,8 +29,12 @@ def starter_check(event: MessageEvent) -> bool:
     gid = str(event.group_id) if isinstance(event, GroupMessageEvent) else None       
     return random_tkk_handler.check_starter(gid, uid)
 
+def characs_check(event: MessageEvent) -> bool:
+    _charac: str = event.get_message().extract_plain_text()[2:]
+    return bool(find_charac(_charac))
+    
 random_tkk = on_regex(pattern="^随机\S{1,8}\s{1}(帮助|简单|普通|困难|地狱|\d{1,2})$", priority=12)
-random_tkk_default = on_regex(pattern="^随机\S{1,8}$", priority=12)
+random_tkk_default = on_regex(pattern="^随机\S{1,8}$", rule=Rule(characs_check), priority=12)
 guess_tkk = on_command(cmd="答案是", rule=Rule(inplaying_check), priority=12, block=True)
 surrender_tkk = on_regex(pattern="^找不到\S{1,8}$", rule=Rule(inplaying_check, starter_check), priority=12, block=True)
 
@@ -38,6 +42,7 @@ surrender_tkk = on_regex(pattern="^找不到\S{1,8}$", rule=Rule(inplaying_check
 async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()):
     uid: str = str(event.user_id)
     gid: str = ""
+    level: str = ""
     
     # Check whether the game has started
     if isinstance(event, GroupMessageEvent):
@@ -81,6 +86,7 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
         
     uid: str = str(event.user_id)
     gid: str = ""
+    _charac: str = matched[2:]
     
     # Check whether the game has started
     if isinstance(event, GroupMessageEvent):
@@ -90,10 +96,6 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
     else:
         if random_tkk_handler.check_tkk_playing(uid):
             await matcher.finish("游戏已经开始啦！")
-    
-    _charac: str = matched[2:]
-    if not find_charac(_charac):
-        await matcher.finish(f"角色名 {_charac} 不存在，是不是记错名字了？")
 
     await matcher.send("未指定难度，默认普通模式")
     

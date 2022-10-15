@@ -69,7 +69,7 @@ class RandomTkkHandler:
                 return self.tkk_status[uid]["playing"] and self.tkk_status[uid]["starter"] == uid
             else:
                 return self.tkk_status[gid]["playing"] and self.tkk_status[gid]["starter"] == uid
-        except Exception:
+        except KeyError:
             return False
     
     def _draw_tkk(self, row: int, col: int, tkk_size: int, _find_charac: str) -> Tuple[bytes, bytes]:
