@@ -1,5 +1,5 @@
 from nonebot import on_command, on_regex
-from typing import List
+from typing import List, Union
 from nonebot.plugin import PluginMetadata
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import Message, MessageSegment, MessageEvent, GroupMessageEvent
@@ -37,8 +37,9 @@ def unplaying_check(event: MessageEvent) -> bool:
 
 def starter_check(event: MessageEvent) -> bool:
     uid: str = str(event.user_id)
-    gid = str(event.group_id) if isinstance(event, GroupMessageEvent) else None       
-    return random_tkk_handler.check_starter(gid, uid)
+    gid: Union[str, None] = str(event.group_id) if isinstance(event, GroupMessageEvent) else None       
+    
+    return random_tkk_handler.check_starter(uid, gid)
 
 def characs_check(event: MessageEvent) -> bool:
     _charac: str = event.get_message().extract_plain_text()[2:]

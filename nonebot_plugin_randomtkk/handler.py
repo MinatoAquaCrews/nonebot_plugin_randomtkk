@@ -1,10 +1,10 @@
 from typing import Tuple, List, Dict, Union, Optional
 from PIL import Image, ImageFont, ImageDraw
 from io import BytesIO
-from nonebot.matcher import Matcher
-from nonebot.adapters.onebot.v11 import Message, MessageSegment
 import random
 import asyncio
+from nonebot.matcher import Matcher
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from .config import tkk_config, find_charac, other_characs_list
 
 class RandomTkkHandler:
@@ -31,7 +31,9 @@ class RandomTkkHandler:
                 tkk_size = int(level) if int(level) <= self.tkk_config.max_size else self.tkk_config.normal_size
                 if tkk_size < self.tkk_config.easy_size:
                     tkk_size = self.tkk_config.easy_size
+                
                 return tkk_size
+            
             except ValueError:
                 return self.tkk_config.easy_size
     
@@ -39,13 +41,14 @@ class RandomTkkHandler:
         '''
             生成唐可可坐标
         '''
-        col = random.randint(1, tkk_size)   # 列
-        row = random.randint(1, tkk_size)   # 行
+        col: int = random.randint(1, tkk_size)   # 列
+        row: int = random.randint(1, tkk_size)   # 行
+        
         return row, col
     
     def _get_waiting_time(self, tkk_size: int) -> int:
         '''
-            计算等待时间
+            计算等待时间（秒）
         '''
         if tkk_size >= 30:
             time = int(0.1 * (tkk_size - 30)**2 + 50)
@@ -60,7 +63,7 @@ class RandomTkkHandler:
         '''
         return False if not self.tkk_status.get(uuid, False) else self.tkk_status[uuid]["playing"]
 
-    def check_starter(self, gid: Optional[str], uid: str) -> bool:
+    def check_starter(self, uid: str, gid: Optional[str] = None) -> bool:
         '''
             作为Rule: 是否为发起者提前结束游戏
         '''
@@ -82,18 +85,18 @@ class RandomTkkHandler:
         _charac: str = find_charac(_find_charac)  # type: ignore
         pick_list: List[str] = other_characs_list(_charac)
         
-        for r in range(0, tkk_size):
-            for c in range(0, tkk_size):
+        for r in range(tkk_size):
+            for c in range(tkk_size):
                 if r == row - 1 and c == col - 1:
                     charac = Image.open(tkk_config.tkk_path / (_charac + ".png"))
-                    charac = charac.resize((64, 64), Image.ANTIALIAS) # 加载icon
+                    charac = charac.resize((64, 64), Image.Resampling.LANCZOS) # 加载icon
                     draw = ImageDraw.Draw(charac)
                     draw.text((20, 40), f"({c+1},{r+1})", font=font, fill=(255, 0, 0, 0))
                     base.paste(charac, (r * 64, c * 64))
                     temp += 1
                 else:
                     icon = Image.open(tkk_config.tkk_path / (random.choice(pick_list) + '.png'))
-                    icon = icon.resize((64,64), Image.ANTIALIAS)
+                    icon = icon.resize((64,64), Image.Resampling.LANCZOS)
                     draw = ImageDraw.Draw(icon)
                     draw.text((20, 40), f"({c+1},{r+1})", font=font, fill=(255, 0, 0, 0))
                     base.paste(icon, (r * 64, c * 64))
@@ -104,7 +107,7 @@ class RandomTkkHandler:
         base2: Image.Image = base.copy()
         mark = Image.open(tkk_config.tkk_path / "mark.png")
 
-        base2.paste(mark,((row - 1) * 64, (col - 1) * 64))
+        base2.paste(mark, ((row - 1) * 64, (col - 1) * 64))
         buf2 = BytesIO()
         base2.save(buf2, format='png')
         
@@ -168,8 +171,10 @@ class RandomTkkHandler:
             timer = self.timers.get(uuid, None)
             if timer:
                 timer.cancel()
+            
             self.timers.pop(uuid, None)
             self.tkk_status.pop(uuid, False)
+        
         except KeyError:
             return False
         
