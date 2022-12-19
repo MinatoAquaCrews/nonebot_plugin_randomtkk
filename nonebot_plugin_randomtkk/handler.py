@@ -104,7 +104,7 @@ class RandomTkkHandler:
         base2: Image.Image = base.copy()
         mark = Image.open(tkk_config.tkk_path / "mark.png")
 
-        base2.paste(mark,((row - 1) * 64, (col - 1) * 64), mark)
+        base2.paste(mark,((row - 1) * 64, (col - 1) * 64))
         buf2 = BytesIO()
         base2.save(buf2, format='png')
         
