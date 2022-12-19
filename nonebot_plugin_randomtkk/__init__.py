@@ -1,5 +1,6 @@
 from nonebot import on_command, on_regex
-from typing import List
+from typing import List, Union
+from nonebot.plugin import PluginMetadata
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import Message, MessageSegment, MessageEvent, GroupMessageEvent
 from nonebot.params import Depends, CommandArg, RegexMatched
@@ -7,14 +8,24 @@ from nonebot.rule import Rule
 from .config import find_charac
 from .handler import random_tkk_handler
 
-__randomtkk_version__ = "v0.1.4"
-__randomtkk_notes__ = f'''
+__randomtkk_version__ = "v0.1.5"
+__randomtkk_usages__ = f'''
 随机唐可可 {__randomtkk_version__}
 [随机唐可可]+[简单/普通/困难/地狱/自定义数量] 开启寻找唐可可挑战
 不指定难度则默认普通
 答案格式：[答案是][行][空格][列]，例如：答案是114 514
 [找不到唐可可] 发起者可提前结束游戏
 将[唐可可]替换成其他角色可以寻找她们！'''.strip()
+
+__plugin_meta__ = PluginMetadata(
+    name="随机唐可可",
+    description="找到唐可可！",
+    usage=__randomtkk_usages__,
+    extra={
+        "author": "KafCoppelia <k740677208@gmail.com>",
+        "version": __randomtkk_version__
+    }
+)
 
 def inplaying_check(event: MessageEvent) -> bool:
     uuid: str = str(event.group_id) if isinstance(event, GroupMessageEvent) else str(event.user_id)  
@@ -26,8 +37,9 @@ def unplaying_check(event: MessageEvent) -> bool:
 
 def starter_check(event: MessageEvent) -> bool:
     uid: str = str(event.user_id)
-    gid = str(event.group_id) if isinstance(event, GroupMessageEvent) else None       
-    return random_tkk_handler.check_starter(gid, uid)
+    gid: Union[str, None] = str(event.group_id) if isinstance(event, GroupMessageEvent) else None       
+    
+    return random_tkk_handler.check_starter(uid, gid)
 
 def characs_check(event: MessageEvent) -> bool:
     _charac: str = event.get_message().extract_plain_text()[2:]
@@ -63,7 +75,7 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
         level = "普通"
     elif len(args) == 2: 
         if args[1] == "帮助":
-            await matcher.finish(__randomtkk_notes__)
+            await matcher.finish(__randomtkk_usages__)
         else:
             level = args[1]
     else:
@@ -82,7 +94,7 @@ async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()
 @random_tkk_default.handle()
 async def _(matcher: Matcher, event: MessageEvent, matched: str = RegexMatched()):
     if matched[-2:] == "帮助":
-        await matcher.finish(__randomtkk_notes__)
+        await matcher.finish(__randomtkk_usages__)
         
     uid: str = str(event.user_id)
     gid: str = ""
