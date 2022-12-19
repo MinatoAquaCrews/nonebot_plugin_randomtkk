@@ -8,7 +8,7 @@ from nonebot.rule import Rule
 from .config import find_charac
 from .handler import random_tkk_handler
 
-__randomtkk_version__ = "v0.1.5a1"
+__randomtkk_version__ = "v0.1.5"
 __randomtkk_usages__ = f'''
 随机唐可可 {__randomtkk_version__}
 [随机唐可可]+[简单/普通/困难/地狱/自定义数量] 开启寻找唐可可挑战
