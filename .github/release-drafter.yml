@@ -33,4 +33,4 @@ template: |
 
   $CHANGES
 
-  Changelog: [`$PREVIOUS_TAG...`](https://github.com/MinatoAquaCrews/nonebot_plugin_tarot/compare/$PREVIOUS_TAG...)
+  Changelog: [`$PREVIOUS_TAG...`](https://github.com/MinatoAquaCrews/nonebot_plugin_randomtkk/compare/$PREVIOUS_TAG...)
