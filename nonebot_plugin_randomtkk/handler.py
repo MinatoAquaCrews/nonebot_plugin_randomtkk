@@ -1,11 +1,13 @@
-from typing import Tuple, List, Dict, Union, Optional
-from PIL import Image, ImageFont, ImageDraw
-from io import BytesIO
-import random
 import asyncio
-from nonebot.matcher import Matcher
+import random
+from io import BytesIO
+from typing import Dict, List, Optional, Tuple, Union
+
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
-from .config import tkk_config, find_charac, other_characs_list
+from nonebot.matcher import Matcher
+from PIL import Image, ImageDraw, ImageFont
+
+from .config import find_charac, other_characs_list, tkk_config
 
 
 class RandomTkkHandler:

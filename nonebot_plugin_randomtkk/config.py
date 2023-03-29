@@ -1,10 +1,11 @@
-from pydantic import BaseModel, Extra
-from typing import Union, Dict, List
 from pathlib import Path
-import httpx
+from typing import Dict, List, Union
+
 import aiofiles
+import httpx
 from nonebot import get_driver
 from nonebot.log import logger
+from pydantic import BaseModel, Extra
 
 
 class RandomTkkConfig(BaseModel, extra=Extra.ignore):
