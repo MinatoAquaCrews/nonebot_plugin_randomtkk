@@ -1,10 +1,13 @@
-from nonebot import on_command, on_regex
 from typing import List, Union
-from nonebot.plugin import PluginMetadata
+
+from nonebot import on_command, on_regex
+from nonebot.adapters.onebot.v11 import (GroupMessageEvent, Message,
+                                         MessageEvent, MessageSegment)
 from nonebot.matcher import Matcher
-from nonebot.adapters.onebot.v11 import Message, MessageSegment, MessageEvent, GroupMessageEvent
-from nonebot.params import Depends, CommandArg, RegexMatched
+from nonebot.params import CommandArg, Depends, RegexMatched
+from nonebot.plugin import PluginMetadata
 from nonebot.rule import Rule
+
 from .config import find_charac
 from .handler import random_tkk_handler
 
